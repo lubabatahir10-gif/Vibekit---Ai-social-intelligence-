@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-page-bg: #FAF7F2;
+  --color-brand-pink: #FFB7C5;
+  --color-brand-beige: #FDF8F5;
+  --color-brand-lavender: #F3E5F5;
+  --color-brand-accent: #A78BFA;
+  
+  --color-vibe-polite: #E0F2F1;
+  --color-vibe-funny: #FFF9C4;
+  --color-vibe-caring: #F8BBD0;
+  --color-vibe-savage: #CFD8DC;
+
+  --shadow-geometric: 0 20px 50px rgba(0,0,0,0.08);
+}
+
+@layer base {
+  body {
+    @apply bg-page-bg text-[#4A4A4A] antialiased;
+  }
+}
+
+.app-container {
+  @apply w-full max-w-[380px] h-[90dvh] md:h-[720px] bg-white rounded-[48px] shadow-geometric flex flex-col relative border-[8px] border-white ring-1 ring-black/5 overflow-hidden;
+}
+
+.soft-card {
+  @apply rounded-3xl border border-white/50;
+}
+
+.geometric-input {
+  @apply bg-brand-beige rounded-2xl border-none focus:ring-2 focus:ring-brand-pink text-sm placeholder:text-gray-300;
+}
+
+.geometric-button {
+  @apply rounded-xl font-semibold transition-all active:scale-95 disabled:opacity-50;
+}
+
