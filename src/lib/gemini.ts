@@ -13,7 +13,7 @@ export const generateAIResponse = async (prompt: string) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-lite-preview",
+      model: "gemini-2.0-flash",
       contents: [{ parts: [{ text: prompt }] }],
     });
     
@@ -31,8 +31,8 @@ export const generateAIResponse = async (prompt: string) => {
       throw new Error("The API key is either invalid or does not have access to this model. Please check your GEMINI_API_KEY.");
     }
     
-    if (message.includes("quota") || message.includes("429") || message.includes("limit") || message.includes("resource_exhausted")) {
-      throw new Error("Rate limit exceeded for this model. Please wait a moment or try again later.");
+    if (message.includes("quota") || message.includes("429") || message.includes("resource_exhausted") || message.includes("limit")) {
+      throw new Error("Gemini API rate limit reached. If you're using a free-tier key, you might need to wait a minute before trying again.");
     }
 
     if (message.includes("safety") || message.includes("blocked")) {
