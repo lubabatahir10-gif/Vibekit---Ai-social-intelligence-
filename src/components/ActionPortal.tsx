@@ -129,8 +129,8 @@ WHAT TO SAY:
       setMessages(prev => [...prev, assistantMsg]);
       onUpdateAura(points);
 
-    } catch (err) {
-      setError('Portal is glitching. Try again? 🌀');
+    } catch (err: any) {
+      setError(err?.message || 'Portal is glitching. Try again? 🌀');
       console.error(err);
     } finally {
       setLoading(false);

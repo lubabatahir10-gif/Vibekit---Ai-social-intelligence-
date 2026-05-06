@@ -95,8 +95,8 @@ AURA:
       setAuraChange(auraVal);
       onUpdateAura(auraVal);
 
-    } catch (err) {
-      setError('Analysis failed. The values are off! 🌀');
+    } catch (err: any) {
+      setError(err?.message || 'Analysis failed. The values are off! 🌀');
       console.error(err);
     } finally {
       setLoading(false);

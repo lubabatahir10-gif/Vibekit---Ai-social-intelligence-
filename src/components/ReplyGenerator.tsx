@@ -91,8 +91,8 @@ AURA: (A number from 10 to 50 based on how cool this reply makes the user look)`
       setOutput(finalReply);
       setAuraChange(finalAura);
       onUpdateAura(finalAura);
-    } catch (err) {
-      setError('AI is having a moment. Try again! 💫');
+    } catch (err: any) {
+      setError(err?.message || 'AI is having a moment. Try again! 💫');
     } finally {
       setLoading(false);
     }
