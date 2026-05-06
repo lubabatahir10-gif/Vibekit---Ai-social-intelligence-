@@ -1,35 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 
-const getApiKey = () => {
-  // 1. Try browser environment (Vite)
-  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) {
-    return import.meta.env.VITE_GEMINI_API_KEY;
-  }
-
-  // 2. Try Node-like environment (AI Studio/Development)
-  if (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) {
-    return process.env.GEMINI_API_KEY;
-  }
-
-  return null;
-};
-
-const apiKey = getApiKey();
-
-if (!apiKey) {
-  console.warn("VibeKit: No API key detected. Add VITE_GEMINI_API_KEY to your Vercel Environment Variables.");
+if (!process.env.GEMINI_API_KEY) {
+  console.warn("VibeKit: No GEMINI_API_KEY detected in environment variables.");
 }
 
-const ai = new GoogleGenAI({ apiKey: apiKey || "" });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export const generateAIResponse = async (prompt: string) => {
-  if (!apiKey || apiKey === "") {
-    throw new Error("Missing API Key. Please add VITE_GEMINI_API_KEY to your Vercel settings and redeploy.");
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("Missing Gemini API Key. Please add it to your environment variables.");
   }
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.1-flash-lite-preview",
       contents: [{ parts: [{ text: prompt }] }],
     });
     
@@ -47,8 +31,8 @@ export const generateAIResponse = async (prompt: string) => {
       throw new Error("The API key is either invalid or does not have access to this model. Please check your GEMINI_API_KEY.");
     }
     
-    if (message.includes("quota") || message.includes("429")) {
-      throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+    if (message.includes("quota") || message.includes("429") || message.includes("limit") || message.includes("resource_exhausted")) {
+      throw new Error("Rate limit exceeded for this model. Please wait a moment or try again later.");
     }
 
     if (message.includes("safety") || message.includes("blocked")) {
