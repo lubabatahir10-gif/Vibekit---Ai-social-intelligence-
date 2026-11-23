@@ -1,38 +1,28 @@
 
-import { GoogleGenAI } from "@google/genai";
-
-export default async function handler(req: any, res: any) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export const generateAIResponse = async (prompt: string) => {
   try {
-    const { prompt } = req.body || {};
-
-    if (!prompt || typeof prompt !== "string") {
-      return res.status(400).json({ error: "A valid prompt is required." });
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      return res.status(500).json({ error: "Gemini API key is not configured." });
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
     });
 
-    if (!response.text) {
-      return res.status(502).json({ error: "Gemini returned an empty response." });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI request failed.");
     }
 
-    return res.status(200).json({ text: response.text });
+    if (!data.text) {
+      throw new Error("AI returned an empty response.");
+    }
+
+    return data.text;
   } catch (error: any) {
-    console.error("Gemini API error:", error);
-    return res.status(500).json({ error: "AI request failed. Please try again." });
+    console.error("VibeKit AI Error:", error);
+    throw new Error(error.message || "Could not connect to VibeKit AI.");
   }
-      }
+};
+  
